@@ -1,0 +1,39 @@
+name: Build Docker image
+
+on:
+  push:
+    branches: [ balazs ]
+
+jobs:
+  # before build let's have a test
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+    - id: checkout
+      uses: actions/checkout@v3
+    - id: setup
+      uses: actions/setup-go@v3
+      with:
+        go-version-file: 'go.mod'
+    - name: test
+      run: go test -tags=test -v ./...
+  
+  pack:
+    name: Package, Publish, and Register
+    runs-on:
+    - ubuntu-latest
+    steps:
+    - id: checkout
+      uses: actions/checkout@v3
+    # - if: ${{ github.event_name != 'pull_request' || ! github.event.pull_request.head.repo.fork }}
+    #   uses: docker/login-action@v1
+    #   with:
+    #     registry: docker.io
+    #     username: ${{ secrets.DOCKER_HUB_USER }}
+    #     password: ${{ secrets.DOCKER_HUB_PASS }}
+    - id: setup-pack
+      uses: buildpacks/github-actions/setup-pack@v4.8.1
+    - id: package-booking-server
+      run: pack build booking-server --builder=gcr.io/buildpacks/builder --env GOOGLE_RUNTIME_VERSION="1.16" --env GOOGLE_RUNTIME="go" --env GOOGLE_BUILDABLE="./cmd/booking-server"
+
+    
