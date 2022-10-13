@@ -38,7 +38,9 @@ jobs:
     #     password: ${{ secrets.DOCKER_HUB_PASS }}
     - id: setup-pack
       uses: buildpacks/github-actions/setup-pack@v4.8.1
+    - id: go-version
+      run: sed -En 's/^go (.*)$/GO_VERSION=\1/p' go.mod >> $GITHUB_ENV
     - id: package
-      run: pack build ${{ matrix.component }} --builder=gcr.io/buildpacks/builder --env GOOGLE_RUNTIME_VERSION="1.16" --env GOOGLE_RUNTIME="go" --env GOOGLE_BUILDABLE="./cmd/${{ matrix.component }}"
+      run: pack build ${{ matrix.component }} --builder=gcr.io/buildpacks/builder --env GOOGLE_RUNTIME_VERSION="${{ env.GO_VERSION_FROM_PROJECT }}" --env GOOGLE_RUNTIME="go" --env GOOGLE_BUILDABLE="./cmd/${{ matrix.component }}"
 
     
