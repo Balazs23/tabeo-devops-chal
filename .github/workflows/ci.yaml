@@ -41,6 +41,6 @@ jobs:
     - id: go-version
       run: sed -En 's/^go (.*)$/GO_VERSION=\1/p' go.mod >> $GITHUB_ENV
     - id: package
-      run: pack build ${{ matrix.component }} --builder=gcr.io/buildpacks/builder --env GOOGLE_RUNTIME_VERSION="${{ env.GO_VERSION_FROM_PROJECT }}" --env GOOGLE_RUNTIME="go" --env GOOGLE_BUILDABLE="./cmd/${{ matrix.component }}"
+      run: pack build ${{ matrix.component }} --builder=gcr.io/buildpacks/builder --env GOOGLE_RUNTIME_VERSION="${{ env.GO_VERSION }}" --env GOOGLE_RUNTIME="go" --env GOOGLE_BUILDABLE="./cmd/${{ matrix.component }}"
 
     
