@@ -45,8 +45,8 @@ jobs:
       run: pack build docker.io/${{ secrets.DOCKER_HUB_USER }}/${{ matrix.component }}:$(echo ${GITHUB_SHA} | cut -c1-8) --publish --builder=gcr.io/buildpacks/builder --env GOOGLE_RUNTIME_VERSION="${{ env.GO_VERSION }}" --env GOOGLE_RUNTIME="go" --env GOOGLE_BUILDABLE="./cmd/${{ matrix.component }}"
     - id: tag-latest
       run: |
-        docker tag docker.io/${{ secrets.DOCKER_HUB_USER }}/${{ matrix.component }}:$(echo ${GITHUB_SHA} | cut -c1-8) docker.io/${{ secrets.DOCKER_HUB_USER }}/${{ matrix.component }}:latest
-        docker push docker.io/${{ secrets.DOCKER_HUB_USER }}/${{ matrix.component }}:latest
+        docker tag "docker.io/${{ secrets.DOCKER_HUB_USER }}/${{ matrix.component }}:$(echo ${GITHUB_SHA} | cut -c1-8)" "docker.io/${{ secrets.DOCKER_HUB_USER }}/${{ matrix.component }}:latest"
+        docker push "docker.io/${{ secrets.DOCKER_HUB_USER }}/${{ matrix.component }}:latest"
 
   migration:
     name: Build and Publish
@@ -67,6 +67,6 @@ jobs:
         push: true
         context: .
         file: .ci/migrate.dockerfile
-        tags: ${{ secrets.DOCKER_HUB_USER }}/migrate:$(echo ${GITHUB_SHA} | cut -c1-8),${{ secrets.DOCKER_HUB_USER }}/migrate:latest
+        tags: "${{ secrets.DOCKER_HUB_USER }}/migrate:$(echo ${GITHUB_SHA} | cut -c1-8)","${{ secrets.DOCKER_HUB_USER }}/migrate:latest"
     
     
