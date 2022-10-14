@@ -43,14 +43,13 @@ jobs:
       run: sed -En 's/^go (.*)$/GO_VERSION=\1/p' go.mod >> $GITHUB_ENV
     - id: package
       run: pack build docker.io/${{ secrets.DOCKER_HUB_USER }}/${{ matrix.component }}:$(echo ${GITHUB_SHA} | cut -c1-8) --publish --builder=gcr.io/buildpacks/builder --env GOOGLE_RUNTIME_VERSION="${{ env.GO_VERSION }}" --env GOOGLE_RUNTIME="go" --env GOOGLE_BUILDABLE="./cmd/${{ matrix.component }}"
-    - id: tag-latest
-      run: |
-        docker tag "docker.io/${{ secrets.DOCKER_HUB_USER }}/${{ matrix.component }}:$(echo ${GITHUB_SHA} | cut -c1-8)" "docker.io/${{ secrets.DOCKER_HUB_USER }}/${{ matrix.component }}:latest"
-        docker push "docker.io/${{ secrets.DOCKER_HUB_USER }}/${{ matrix.component }}:latest"
 
   migration:
     name: Build and Publish
     needs: [tests]
+    strategy:
+      matrix:
+        component: ["migrate"]
     runs-on:
     - ubuntu-latest
     steps:
@@ -61,12 +60,17 @@ jobs:
         registry: docker.io
         username: ${{ secrets.DOCKER_HUB_USER }}
         password: ${{ secrets.DOCKER_HUB_PASS }}
+    - name: meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.component }}
     - name: build_n_push
       uses: docker/build-push-action@v3
       with:
         push: true
         context: .
-        file: .ci/migrate.dockerfile
-        tags: "${{ secrets.DOCKER_HUB_USER }}/migrate:$(echo ${GITHUB_SHA} | cut -c1-8)","${{ secrets.DOCKER_HUB_USER }}/migrate:latest"
+        file: .ci/${{ matrix.component }}.dockerfile
+        tags: ${{ steps.meta.outputs.tags }}
     
     
