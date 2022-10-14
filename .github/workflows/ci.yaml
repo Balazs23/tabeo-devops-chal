@@ -69,6 +69,6 @@ jobs:
         push: true
         context: .
         file: .ci/${{ matrix.component }}.dockerfile
-        tags: ${{ steps.meta.outputs.tags }}
+        tags: ${{ env.IMAGE_TAG }}
     
     
