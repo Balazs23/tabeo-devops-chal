@@ -7,7 +7,7 @@ kubectl kustomize k8s/overlays/test
 kubectl apply -k k8s/overlays/test
 
 ## Test
-The deployment has been tested in a default GKE cluster GKE, using the follwing command for listing
+The deployment has been tested in a default GKE cluster
 
 ### self-signed SSL
 ## SSL cert
