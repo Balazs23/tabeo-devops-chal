@@ -1,0 +1,74 @@
+name: Build Docker image
+
+on:
+  push:
+    branches: [ balazs ]
+    paths-ignore: " k8s/**/*"
+
+jobs:
+  # before build let's have a test
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+    - id: checkout
+      uses: actions/checkout@v3
+    - id: setup
+      uses: actions/setup-go@v3
+      with:
+        go-version-file: 'go.mod'
+    - id: download
+      run: go mod download
+    - name: test
+      run: go test -tags=test -v ./...
+  
+  pack:
+    name: Package, Publish, and Register
+    needs: [tests]
+    strategy:
+      matrix:
+        component: ["booking-server", "write-hello"]
+    runs-on:
+    - ubuntu-latest
+    steps:
+    - id: checkout
+      uses: actions/checkout@v3
+    - id: setup-pack
+      uses: buildpacks/github-actions/setup-pack@v4.8.1
+    - uses: docker/login-action@v2
+      with:
+        registry: docker.io
+        username: ${{ secrets.DOCKER_HUB_USER }}
+        password: ${{ secrets.DOCKER_HUB_PASS }}
+    - id: go-version
+      run: sed -En 's/^go (.*)$/GO_VERSION=\1/p' go.mod >> $GITHUB_ENV
+    - id: package
+      run: pack build docker.io/${{ secrets.DOCKER_HUB_USER }}/${{ matrix.component }}:$(echo ${GITHUB_SHA} | cut -c1-8) --publish --builder=gcr.io/buildpacks/builder --env GOOGLE_RUNTIME_VERSION="${{ env.GO_VERSION }}" --env GOOGLE_RUNTIME="go" --env GOOGLE_BUILDABLE="./cmd/${{ matrix.component }}"
+
+  migration:
+    name: Build and Publish
+    needs: [tests]
+    strategy:
+      matrix:
+        component: ["migrate"]
+    runs-on:
+    - ubuntu-latest
+    steps:
+    - id: checkout
+      uses: actions/checkout@v3
+    - uses: docker/login-action@v2
+      with:
+        registry: docker.io
+        username: ${{ secrets.DOCKER_HUB_USER }}
+        password: ${{ secrets.DOCKER_HUB_PASS }}
+    - name: meta
+      id: meta
+      run: echo "IMAGE_TAG=docker.io/${{ secrets.DOCKER_HUB_USER }}/${{ matrix.component }}:$(echo ${GITHUB_SHA} | cut -c1-8)" >> $GITHUB_ENV
+    - name: build_n_push
+      uses: docker/build-push-action@v3
+      with:
+        push: true
+        context: .
+        file: .ci/${{ matrix.component }}.dockerfile
+        tags: ${{ env.IMAGE_TAG }}
+    
+    

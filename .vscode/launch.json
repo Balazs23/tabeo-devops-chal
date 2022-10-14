@@ -1,0 +1,31 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Booking server",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "${workspaceFolder}/cmd/booking-server/main.go",
+            "env": {
+                "POSTGRES_HOST": "psql",
+                "POSTGRES_DB": "space",
+                "POSTGRES_USER": "postgres",
+                "POSTGRES_PASSWORD": "postgres"
+            }
+        },
+        {
+            "name": "Hello writer",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "${workspaceFolder}/cmd/write-hello/main.go",
+            "env": {
+                "POSTGRES_HOST": "psql",
+                "POSTGRES_DB": "space",
+                "POSTGRES_USER": "postgres",
+                "POSTGRES_PASSWORD": "postgres"
+            }
+        }
+    ]
+}

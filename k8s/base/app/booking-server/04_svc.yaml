@@ -1,0 +1,17 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: booking-server
+  namespace: spacetrouble
+  labels:
+    app: booking-server
+spec:
+  type: ClusterIP
+  ports:
+   - port: 5000
+     protocol: TCP
+     targetPort: 5000
+  selector:
+   app: booking-server
+---

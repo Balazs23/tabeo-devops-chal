@@ -1,0 +1,12 @@
+# TODO: use passvault
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: spacetrouble-config
+  namespace: spacetrouble
+  # labels:
+  #   app: spacetrouble
+data:
+  # see overlays
+---

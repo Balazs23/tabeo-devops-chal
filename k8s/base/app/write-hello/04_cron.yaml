@@ -1,0 +1,47 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: write-hello-daily
+  namespace: spacetrouble
+spec:
+  schedule: "*/15 * * * mon-sat"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: write-hello
+            image: balazs23/booking-server:f3f8a850
+            imagePullPolicy: Always
+            env:
+            - name: POSTGRES_HOST
+              value: "postgres.database"
+            envFrom:
+            - configMapRef:
+                name: spacetrouble-config
+          restartPolicy: Never
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: write-hello-sunday
+  namespace: spacetrouble
+spec:
+  schedule: "0 * * * sun"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: write-hello
+            image: balazs23/booking-server:f3f8a850
+            imagePullPolicy: Always
+            env:
+            - name: POSTGRES_HOST
+              value: "postgres.database"
+            envFrom:
+            - configMapRef:
+                name: spacetrouble-config
+          restartPolicy: Never
+---

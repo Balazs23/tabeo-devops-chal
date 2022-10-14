@@ -1,0 +1,12 @@
+# TODO: use passvault
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-config
+  namespace: database
+  labels:
+    app: postgres
+data:
+  # see overlays
+---

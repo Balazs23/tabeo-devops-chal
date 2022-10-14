@@ -1,0 +1,53 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: booking-server
+  namespace: spacetrouble
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: booking-server
+  template:
+    metadata:
+      labels:
+        app: booking-server
+    spec:
+      initContainers:
+        - name: migration
+          image: balazs23/migrate:f3f8a850
+          imagePullPolicy: "Always"
+          env:
+            - name: PGHOST
+              value: "postgres.database"
+            - name: PGDATABASE
+              valueFrom:
+                configMapKeyRef:
+                  key: POSTGRES_DB
+                  name: spacetrouble-config
+            - name: PGUSER
+              valueFrom:
+                configMapKeyRef:
+                  key: POSTGRES_USER
+                  name: spacetrouble-config
+            - name: PGPASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  key: POSTGRES_PASSWORD
+                  name: spacetrouble-config
+      containers:
+        - name: booking-server
+          image: balazs23/booking-server:f3f8a850
+          imagePullPolicy: "Always"
+          ports:
+          - containerPort: 5000
+            name: booking-http
+            protocol: TCP
+          env:
+            - name: POSTGRES_HOST
+              value: "postgres.database"
+          envFrom:
+            - configMapRef:
+                name: spacetrouble-config
+---

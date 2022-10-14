@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - database/00_ns.yaml
+  - database/01_config.yaml
+  - database/02_pvc.yaml
+  - database/03_deploy.yaml
+  - database/04_svc.yaml
+# app common
+  - app/00_ns.yaml
+  - app/01_config.yaml
+# booking server
+  - app/booking-server/03_deploy.yaml
+  - app/booking-server/04_svc.yaml
+# nginx proxy
+  - app/nginx/00_secret.yaml
+  - app/nginx/01_config.yaml
+  - app/nginx/03_deploy.yaml
+  - app/nginx/04_svc.yaml
+# write hello job
+  - app/write-hello/04_cron.yaml

@@ -1,0 +1,17 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Go: download",
+        "type": "shell",
+        "command": "go mod download",
+      },
+      {
+        "label": "DB: migration",
+        "type": "shell",
+        "command": "go get -u github.com/jackc/tern && tern migrate -m ./migrations",
+      }
+    ]
+  }
