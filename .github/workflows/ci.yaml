@@ -62,7 +62,7 @@ jobs:
         password: ${{ secrets.DOCKER_HUB_PASS }}
     - name: meta
       id: meta
-      run: echo "IMAGE_TAG=build docker.io/${{ secrets.DOCKER_HUB_USER }}/${{ matrix.component }}:$(echo ${GITHUB_SHA} | cut -c1-8)" >> $GITHUB_ENV
+      run: echo "IMAGE_TAG=docker.io/${{ secrets.DOCKER_HUB_USER }}/${{ matrix.component }}:$(echo ${GITHUB_SHA} | cut -c1-8)" >> $GITHUB_ENV
     - name: build_n_push
       uses: docker/build-push-action@v3
       with:
