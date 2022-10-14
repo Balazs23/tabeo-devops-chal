@@ -2,7 +2,7 @@ name: Build Docker image
 
 on:
   push:
-    branches: [ balazs ]
+    branches: [ main ]
     paths-ignore: " k8s/**/*"
 
 jobs:
