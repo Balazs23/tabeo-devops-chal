@@ -21,6 +21,10 @@ ENV GO111MODULE=auto
 RUN bash /tmp/library-scripts/go-debian.sh "none" "/usr/local/go" "${GOPATH}" "${USERNAME}" "false" \
     && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
+# Install kubectl and helm
+COPY library-scripts/kubectl-helm-debian.sh /tmp/library-scripts/
+RUN apt-get update && bash /tmp/library-scripts/kubectl-helm-debian.sh
+
 # [Choice] Node.js version: none, lts/*, 16, 14, 12, 10
 ARG NODE_VERSION="none"
 ENV NVM_DIR=/usr/local/share/nvm

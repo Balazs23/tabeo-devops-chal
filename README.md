@@ -53,7 +53,7 @@ You will be given the contact information for the developer with whom you may as
 
 ## Quickstart
 
-1. Install lastest version of postgresql and Go version 1.16+
+1. Install lastest version of postgresql and Go version 1.19+
 2. Create a user (postgres) and a database (space)
 3. Install tern following instructions here: `https://github.com/jackc/tern`
 3. Run the migrations using tern
